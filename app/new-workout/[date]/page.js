@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-const { firebaseApp } = require("@/components/FirebaseConfig");
+const { firebaseApp } = require("@/lib/firestore/FirebaseConfig");
 
 export default function NewWorkout({ params }) {
     const date = params.date;
