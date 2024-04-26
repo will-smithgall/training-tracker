@@ -105,7 +105,7 @@ export default function WorkoutTab() {
                             return (
                                 <ExerciseCard
                                     key={index}
-                                    exerciseName={exercise.name}
+                                    name={exercise.name}
                                     weight={exercise.content.weight}
                                     reps={exercise.content.reps}
                                     sets={exercise.content.sets}

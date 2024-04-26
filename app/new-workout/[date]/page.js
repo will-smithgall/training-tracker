@@ -1,7 +1,3 @@
-"use client";
-
-import * as React from "react";
-const { firebaseApp } = require("@/components/FirebaseConfig");
 import NewWorkoutCard from "@/components/NewWorkoutCard";
 
 export default function NewWorkout({ params }) {
