@@ -3,23 +3,15 @@
 import * as React from "react";
 import { Calendar } from "@/components/ui/calendar";
 import ExerciseCard from "./ExerciseCard";
-const { firebaseApp } = require("./FirebaseConfig"); //Starts the firebase app
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-const {
-    getFirestore,
-    collection,
-    query,
-    orderBy,
-    limit,
-    where,
-    getDocs,
-    Timestamp,
-} = require("firebase/firestore");
+import {
+    getMostRecentWorkout,
+    getWorkoutByDate,
+} from "@/lib/firestore/GetWorkouts";
 
 export default function WorkoutTab() {
-    const db = getFirestore();
     const router = useRouter();
     const [calendarDate, setCalendarDate] = React.useState(new Date());
     const [workout, setWorkout] = React.useState([]);
@@ -35,74 +27,50 @@ export default function WorkoutTab() {
     }
 
     // Get most recent workout from firestore
-    const getMostRecentWorkout = async () => {
-        const q = query(
-            collection(db, "Workouts"),
-            orderBy("Date", "desc"),
-            limit(1)
-        );
+    const showMostRecentWorkout = async () => {
+        const snapshot = await getMostRecentWorkout();
 
-        getDocs(q)
-            .then((snapshot) => {
-                snapshot.forEach((document) => {
-                    const data = document.data();
-                    setCalendarDate(data.Date.toDate());
-                    let exercises = [];
+        snapshot.forEach((document) => {
+            const data = document.data();
+            setCalendarDate(data.Date.toDate());
+            let exercises = [];
 
-                    for (const name in data) {
-                        const content = data[name];
-                        if (name != "Date") {
-                            exercises = [...exercises, { name, content }];
-                        }
-                    }
+            for (const name in data) {
+                const content = data[name];
+                if (name != "Date") {
+                    exercises = [...exercises, { name, content }];
+                }
+            }
 
-                    setWorkout(exercises);
-                });
-            })
-            .catch((error) => {
-                console.log("Error getting most recent workout");
-            });
+            setWorkout(exercises);
+        });
     };
 
     React.useEffect(() => {
         //Get most recent workout on initial page load
-        getMostRecentWorkout();
+        showMostRecentWorkout();
     }, []);
 
-    const getWorkoutByDate = async (date) => {
-        //Check for workout at any point in the selected date
-        const q = query(
-            collection(db, "Workouts"),
-            where("Date", ">=", Timestamp.fromDate(date)),
-            where(
-                "Date",
-                "<",
-                Timestamp.fromDate(
-                    new Date(date.getTime() + 24 * 60 * 60 * 1000)
-                )
-            ),
-            limit(1)
-        );
+    const updateWorkoutFromDate = async (date) => {
+        const snapshot = await getWorkoutByDate(date);
 
-        getDocs(q).then((snapshot) => {
-            snapshot.forEach((document) => {
-                const data = document.data();
-                let exercises = [];
+        snapshot.forEach((document) => {
+            const data = document.data();
+            let exercises = [];
 
-                for (const name in data) {
-                    const content = data[name];
-                    if (name != "Date") {
-                        exercises = [...exercises, { name, content }];
-                    }
+            for (const name in data) {
+                const content = data[name];
+                if (name != "Date") {
+                    exercises = [...exercises, { name, content }];
                 }
-
-                setWorkout(exercises);
-            });
-
-            if (snapshot.docs.length == 0) {
-                setWorkout([]);
             }
+
+            setWorkout(exercises);
         });
+
+        if (snapshot.docs.length == 0) {
+            setWorkout([]);
+        }
     };
 
     React.useEffect(() => {
@@ -111,7 +79,7 @@ export default function WorkoutTab() {
         }
 
         //Update displayed workout when calendar date is changed
-        getWorkoutByDate(calendarDate);
+        updateWorkoutFromDate(calendarDate);
     }, [calendarDate]);
 
     React.useEffect(() => {
