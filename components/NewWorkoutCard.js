@@ -41,6 +41,20 @@ export default function NewWorkoutCard({ date }) {
         setExercises(newExercises);
     }
 
+    function handleEditExercise(index) {
+        const newExercises = exercises.map((exercise) => {
+            if (exercise.key === index) {
+                return {
+                    ...exercise,
+                    editing: true,
+                };
+            }
+            return exercise;
+        });
+
+        setExercises(newExercises);
+    }
+
     return (
         <Card className="p-3 m-5">
             <CardHeader>
@@ -64,8 +78,12 @@ export default function NewWorkoutCard({ date }) {
                                         sets={exercise.sets}
                                         reps={exercise.reps}
                                         hide={false}
+                                        editing={exercise.editing}
                                         handleClick={() =>
                                             handleRemoveExercise(exercise.key)
+                                        }
+                                        handleEdit={() =>
+                                            handleEditExercise(exercise.key)
                                         }
                                     />
                                 </div>

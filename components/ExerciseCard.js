@@ -2,6 +2,9 @@
 
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { AiTwotoneCloseCircle } from "react-icons/ai";
+import { Input } from "@/components/ui/input";
+import { CiEdit } from "react-icons/ci";
+
 import {
     Table,
     TableBody,
@@ -17,11 +20,22 @@ export default function ExerciseCard({
     sets,
     reps,
     hide = true,
+    editing = false,
     handleClick = () => {},
+    handleEdit = () => {},
 }) {
     return (
         <Card className="p-3 w-full h-full group relative">
-            <CardTitle className="pb-3">{name}</CardTitle>
+            {editing ? (
+                <Input
+                    type="string"
+                    placeholder={name}
+                    className="w-1/2 mx-auto mb-2"
+                />
+            ) : (
+                <CardTitle className="pb-3">{name}</CardTitle>
+            )}
+
             <CardContent>
                 <Table>
                     <TableHeader>
@@ -33,21 +47,53 @@ export default function ExerciseCard({
                     </TableHeader>
                     <TableBody>
                         <TableRow className="flex justify-around justify-items-center w-full">
-                            <TableCell>{weight}</TableCell>
-                            <TableCell>{sets}</TableCell>
-                            <TableCell>{reps}</TableCell>
+                            {editing ? (
+                                <>
+                                    <Input
+                                        type="number"
+                                        placeholder={weight}
+                                        className="w-1/4 mt-2"
+                                    />
+                                    <Input
+                                        type="number"
+                                        placeholder={sets}
+                                        className="w-1/4 mt-2"
+                                    />
+                                    <Input
+                                        type="number"
+                                        placeholder={reps}
+                                        className="w-1/4 mt-2"
+                                    />
+                                </>
+                            ) : (
+                                <>
+                                    <TableCell>{weight}</TableCell>
+                                    <TableCell>{sets}</TableCell>
+                                    <TableCell>{reps}</TableCell>
+                                </>
+                            )}
                         </TableRow>
                     </TableBody>
                 </Table>
                 {!hide && (
-                    <AiTwotoneCloseCircle
-                        className="text-right hidden group-hover:block absolute right-2 top-[45%] cursor-pointer"
-                        style={{
-                            transition: "all 0.3s",
-                        }}
-                        size={24}
-                        onClick={handleClick}
-                    />
+                    <>
+                        <AiTwotoneCloseCircle
+                            className="text-right hidden group-hover:block absolute right-2 top-[5%] cursor-pointer"
+                            style={{
+                                transition: "all 0.3s",
+                            }}
+                            size={24}
+                            onClick={handleClick}
+                        />
+                        <CiEdit
+                            className="text-right hidden group-hover:block absolute right-2 top-[20%] cursor-pointer"
+                            style={{
+                                transition: "all 0.3s",
+                            }}
+                            size={24}
+                            onClick={handleEdit}
+                        />
+                    </>
                 )}
             </CardContent>
         </Card>
