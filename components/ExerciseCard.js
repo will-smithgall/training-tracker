@@ -47,25 +47,7 @@ export default function ExerciseCard({
                     </TableHeader>
                     <TableBody>
                         <TableRow className="flex justify-around justify-items-center w-full">
-                            {editing ? (
-                                <>
-                                    <Input
-                                        type="number"
-                                        placeholder={weight}
-                                        className="w-1/4 mt-2"
-                                    />
-                                    <Input
-                                        type="number"
-                                        placeholder={sets}
-                                        className="w-1/4 mt-2"
-                                    />
-                                    <Input
-                                        type="number"
-                                        placeholder={reps}
-                                        className="w-1/4 mt-2"
-                                    />
-                                </>
-                            ) : (
+                            {!editing && (
                                 <>
                                     <TableCell>{weight}</TableCell>
                                     <TableCell>{sets}</TableCell>
@@ -75,6 +57,26 @@ export default function ExerciseCard({
                         </TableRow>
                     </TableBody>
                 </Table>
+                {editing && (
+                    <div className="flex justify-around">
+                        <Input
+                            type="number"
+                            placeholder={weight}
+                            className="w-1/4 mt-2"
+                        />
+                        <Input
+                            type="number"
+                            placeholder={sets}
+                            className="w-1/4 mt-2"
+                        />
+                        <Input
+                            type="number"
+                            placeholder={reps}
+                            className="w-1/4 mt-2"
+                        />
+                    </div>
+                )}
+
                 {!hide && (
                     <>
                         <AiTwotoneCloseCircle

@@ -6,6 +6,10 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import ExerciseCard from "@/components/ExerciseCard";
+import { getWorkoutByDate } from "@/lib/firestore/GetWorkouts";
+import { saveWorkout } from "@/lib/firestore/SaveWorkout";
+import formatDate from "@/lib/DateFormat";
+import { useRouter } from "next/navigation";
 
 import {
     Table,
@@ -19,6 +23,37 @@ import {
 
 export default function NewWorkoutCard({ date }) {
     const [exercises, setExercises] = React.useState([]);
+    const [internalDate, setInternalDate] = React.useState(new Date(date));
+    const router = useRouter();
+
+    function loadExercises() {
+        getWorkoutByDate(date).then((snapshot) => {
+            if (snapshot.empty) {
+                setExercises([]);
+                return;
+            }
+
+            const workout = snapshot.docs[0].data();
+            let values = [];
+            for (const name in workout) {
+                const content = workout[name];
+                if (name != "Date") {
+                    const reps = content.reps;
+                    const sets = content.sets;
+                    const weight = content.weight;
+                    const key = content.key;
+
+                    values = [...values, { name, reps, sets, weight, key }];
+                }
+            }
+
+            for (const x in values) {
+                console.log(values[x]);
+            }
+
+            setExercises(values);
+        });
+    }
 
     function handleAddExercise() {
         const newExercise = {
@@ -55,12 +90,33 @@ export default function NewWorkoutCard({ date }) {
         setExercises(newExercises);
     }
 
+    async function handleSaveWorkout() {
+        await saveWorkout(exercises, formatDate(internalDate));
+    }
+
+    React.useEffect(() => {
+        //load exercises on page load, in case there are some exercises in workout already
+        loadExercises();
+    }, []);
+
+    React.useEffect(() => {
+        if (!internalDate) {
+            return;
+        }
+
+        //Redirect to new-workout page with new date
+        router.push(formatDate(internalDate));
+    }, [internalDate]);
+
     return (
         <Card className="p-3 m-5">
             <CardHeader>
                 <div className="flex flex-col gap-3 justify-center items-center">
                     <h2>Log New Workout</h2>
-                    <DayPicker defaultDate={date}></DayPicker>
+                    <DayPicker
+                        date={internalDate}
+                        setDate={setInternalDate}
+                    ></DayPicker>
                 </div>
             </CardHeader>
             <CardContent>
@@ -95,7 +151,7 @@ export default function NewWorkoutCard({ date }) {
                 </div>
                 <div className="flex justify-center gap-16 pt-10">
                     <Button onClick={handleAddExercise}>Add Exercise</Button>
-                    <Button>Save Workout</Button>
+                    <Button onClick={handleSaveWorkout}>Save Workout</Button>
                 </div>
             </CardContent>
         </Card>

@@ -13,11 +13,7 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 
-export function DayPicker({ defaultDate }) {
-    const [date, setDate] = React.useState(
-        defaultDate ? new Date(defaultDate) : Date.now
-    );
-
+export function DayPicker({ date, setDate }) {
     return (
         <Popover>
             <PopoverTrigger asChild>
