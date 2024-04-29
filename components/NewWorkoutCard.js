@@ -10,6 +10,9 @@ import { getWorkoutByDate } from "@/lib/firestore/GetWorkouts";
 import { saveWorkout } from "@/lib/firestore/SaveWorkout";
 import formatDate from "@/lib/DateFormat";
 import { useRouter } from "next/navigation";
+import { IoHome } from "react-icons/io5";
+import Link from "next/link";
+import Swal from "sweetalert2";
 
 import {
     Table,
@@ -90,8 +93,43 @@ export default function NewWorkoutCard({ date }) {
         setExercises(newExercises);
     }
 
+    function handleSaveExercise(key) {
+        const newExercises = exercises.map((exercise) => {
+            if (exercise.key === key) {
+                return {
+                    ...exercise,
+                    editing: false,
+                };
+            }
+            return exercise;
+        });
+
+        setExercises(newExercises);
+    }
+
     async function handleSaveWorkout() {
+        if (exercises.length === 0) {
+            Swal.fire({
+                toast: true,
+                position: "top-end",
+                icon: "error",
+                title: "Empty workout!",
+                showConfirmButton: false,
+                timer: 3000,
+            });
+            return;
+        }
+
         await saveWorkout(exercises, formatDate(internalDate));
+        console.log("HEROIAJ:FDKL");
+        Swal.fire({
+            toast: true,
+            position: "top-end",
+            icon: "success",
+            title: "Workout saved!",
+            showConfirmButton: false,
+            timer: 3000,
+        });
     }
 
     React.useEffect(() => {
@@ -112,7 +150,13 @@ export default function NewWorkoutCard({ date }) {
         <Card className="p-3 m-5">
             <CardHeader>
                 <div className="flex flex-col gap-3 justify-center items-center">
-                    <h2>Log New Workout</h2>
+                    <div className="flex items-center gap-14">
+                        <Link href="/">
+                            <IoHome size={24} />
+                        </Link>
+                        <h2>Log New Workout</h2>
+                    </div>
+
                     <DayPicker
                         date={internalDate}
                         setDate={setInternalDate}
@@ -137,6 +181,9 @@ export default function NewWorkoutCard({ date }) {
                                         }
                                         handleEdit={() =>
                                             handleEditExercise(exercise.key)
+                                        }
+                                        handleSave={() =>
+                                            handleSaveExercise(exercise.key)
                                         }
                                     />
                                 </div>
