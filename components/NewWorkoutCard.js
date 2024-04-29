@@ -129,10 +129,7 @@ export default function NewWorkoutCard({ date }) {
                                     key={exercise.key}
                                 >
                                     <ExerciseCard
-                                        name={exercise.name}
-                                        weight={exercise.weight}
-                                        sets={exercise.sets}
-                                        reps={exercise.reps}
+                                        exercise={exercise}
                                         hide={false}
                                         editing={exercise.editing}
                                         handleClick={() =>

@@ -15,10 +15,7 @@ import {
 } from "@/components/ui/table";
 
 export default function ExerciseCard({
-    name,
-    weight,
-    sets,
-    reps,
+    exercise,
     hide = true,
     editing = false,
     handleClick = () => {},
@@ -49,9 +46,9 @@ export default function ExerciseCard({
                         <TableRow className="flex justify-around justify-items-center w-full">
                             {!editing && (
                                 <>
-                                    <TableCell>{weight}</TableCell>
-                                    <TableCell>{sets}</TableCell>
-                                    <TableCell>{reps}</TableCell>
+                                    <TableCell>{exercise.weight}</TableCell>
+                                    <TableCell>{exercise.sets}</TableCell>
+                                    <TableCell>{exercise.reps}</TableCell>
                                 </>
                             )}
                         </TableRow>
@@ -61,17 +58,17 @@ export default function ExerciseCard({
                     <div className="flex justify-around">
                         <Input
                             type="number"
-                            placeholder={weight}
+                            placeholder={exercise.weight}
                             className="w-1/4 mt-2"
                         />
                         <Input
                             type="number"
-                            placeholder={sets}
+                            placeholder={exercise.sets}
                             className="w-1/4 mt-2"
                         />
                         <Input
                             type="number"
-                            placeholder={reps}
+                            placeholder={exercise.reps}
                             className="w-1/4 mt-2"
                         />
                     </div>

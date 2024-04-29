@@ -53,8 +53,16 @@ export default function WorkoutTab() {
 
             for (const name in data) {
                 const content = data[name];
+                const reps = content.reps;
+                const sets = content.sets;
+                const weight = content.weight;
+                const key = content.key;
+
                 if (name != "Date") {
-                    exercises = [...exercises, { name, content }];
+                    exercises = [
+                        ...exercises,
+                        { name, reps, sets, weight, key },
+                    ];
                 }
             }
 
@@ -97,11 +105,8 @@ export default function WorkoutTab() {
                         workout.map((exercise) => {
                             return (
                                 <ExerciseCard
-                                    key={exercise.content.key}
-                                    name={exercise.name}
-                                    weight={exercise.content.weight}
-                                    reps={exercise.content.reps}
-                                    sets={exercise.content.sets}
+                                    key={exercise.key}
+                                    exercise={exercise}
                                 />
                             );
                         })
