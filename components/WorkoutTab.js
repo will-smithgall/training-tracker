@@ -6,6 +6,7 @@ import ExerciseCard from "./ExerciseCard";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import formatDate from "@/lib/DateFormat";
 import {
     getMostRecentWorkout,
     getWorkoutByDate,
@@ -17,14 +18,6 @@ export default function WorkoutTab() {
     const [workout, setWorkout] = React.useState([]);
 
     //TODO: add somewhere to put a button to display a form to add a workout (another spot mentioned in todo below)
-
-    function formatDate(date) {
-        let day = date.getDate();
-        let month = date.getMonth() + 1;
-        let year = date.getFullYear();
-
-        return `${year}-${month}-${day}`;
-    }
 
     // Get most recent workout from firestore
     const showMostRecentWorkout = async () => {
@@ -60,8 +53,16 @@ export default function WorkoutTab() {
 
             for (const name in data) {
                 const content = data[name];
+                const reps = content.reps;
+                const sets = content.sets;
+                const weight = content.weight;
+                const key = content.key;
+
                 if (name != "Date") {
-                    exercises = [...exercises, { name, content }];
+                    exercises = [
+                        ...exercises,
+                        { name, reps, sets, weight, key },
+                    ];
                 }
             }
 
@@ -101,14 +102,11 @@ export default function WorkoutTab() {
                 />
                 <div className="flex flex-col gap-2 w-full">
                     {workout.length != 0 ? (
-                        workout.map((exercise, index) => {
+                        workout.map((exercise) => {
                             return (
                                 <ExerciseCard
-                                    key={index}
-                                    exerciseName={exercise.name}
-                                    weight={exercise.content.weight}
-                                    reps={exercise.content.reps}
-                                    sets={exercise.content.sets}
+                                    key={exercise.key}
+                                    exercise={exercise}
                                 />
                             );
                         })
