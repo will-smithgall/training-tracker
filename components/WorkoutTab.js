@@ -7,6 +7,8 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import formatDate from "@/lib/DateFormat";
+import { Separator } from "@/components/ui/separator";
+
 import {
     getMostRecentWorkout,
     getWorkoutByDate,
@@ -92,42 +94,64 @@ export default function WorkoutTab() {
     }, [workout]);
 
     return (
-        <Card className="p-3">
-            <CardHeader>Recent Workouts</CardHeader>
-            <CardContent className="flex justify-between gap-16">
-                <Calendar
-                    mode="single"
-                    selected={calendarDate}
-                    onSelect={setCalendarDate}
-                />
-                <div className="flex flex-col gap-2 w-full">
-                    {workout.length != 0 ? (
-                        workout.map((exercise) => {
-                            return (
-                                <ExerciseCard
-                                    key={exercise.key}
-                                    exercise={exercise}
-                                />
-                            );
-                        })
-                    ) : (
-                        <>
-                            <p>No workout found for this day</p>
+        <>
+            <div className="flex flex-col sm:flex-row gap-3">
+                <Card className="h-fit grid justify-items-center">
+                    <CardContent>
+                        <Calendar
+                            mode="single"
+                            selected={calendarDate}
+                            onSelect={setCalendarDate}
+                        />
+                        <Separator />
+                        <div className="flex justify-center">
                             <Button
-                                onClick={() =>
+                                className="mt-3"
+                                onClick={() => {
                                     router.push(
                                         `new-workout/${formatDate(
                                             calendarDate
                                         )}`
-                                    )
-                                }
+                                    );
+                                }}
                             >
-                                Log New Workout
+                                Edit Workout
                             </Button>
-                        </> //TODO: Make this not ass lmfao
-                    )}
-                </div>
-            </CardContent>
-        </Card>
+                        </div>
+                    </CardContent>
+                </Card>
+                <Card className="grow p-3">
+                    <CardContent>
+                        <div className="flex sm:flex-row flex-col gap-2 flex-wrap">
+                            {workout.length != 0 ? (
+                                workout.map((exercise) => {
+                                    return (
+                                        <ExerciseCard
+                                            key={exercise.key}
+                                            exercise={exercise}
+                                        />
+                                    );
+                                })
+                            ) : (
+                                <>
+                                    <p>No workout found for this day</p>
+                                    <Button
+                                        onClick={() =>
+                                            router.push(
+                                                `new-workout/${formatDate(
+                                                    calendarDate
+                                                )}`
+                                            )
+                                        }
+                                    >
+                                        Log New Workout
+                                    </Button>
+                                </> //TODO: Make this not ass lmfao
+                            )}
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+        </>
     );
 }
