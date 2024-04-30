@@ -63,7 +63,7 @@ export default function ExerciseCard({
     }
 
     return (
-        <Card className="p-3 w-full h-full group relative">
+        <Card className="p-2 group relative flex-grow">
             {!editing && (
                 <CardTitle className="pt-3 pb-5 text-center">
                     {exercise.name}
