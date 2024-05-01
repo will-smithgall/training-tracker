@@ -120,7 +120,7 @@ export default function WorkoutTab() {
                         </div>
                     </CardContent>
                 </Card>
-                <Card className="grow p-3">
+                <Card className="grow pt-6">
                     <CardContent>
                         <div className="flex sm:flex-row flex-col gap-2 flex-wrap">
                             {workout.length != 0 ? (
