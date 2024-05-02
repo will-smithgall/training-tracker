@@ -9,9 +9,12 @@ import { AiTwotoneCloseCircle } from "react-icons/ai";
 import { Input } from "@/components/ui/input";
 import { CiEdit } from "react-icons/ci";
 import { IoCheckmarkDoneOutline } from "react-icons/io5";
+import { IoChevronDown } from "react-icons/io5";
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { addExerciseNameFirestore } from "@/lib/firestore/SetExercises";
+import Swal from "sweetalert2";
 import {
     Table,
     TableBody,
@@ -43,18 +46,6 @@ import {
     CommandList,
 } from "@/components/ui/command";
 
-const languages = [
-    { label: "English", value: "en" },
-    { label: "French", value: "fr" },
-    { label: "German", value: "de" },
-    { label: "Spanish", value: "es" },
-    { label: "Portuguese", value: "pt" },
-    { label: "Russian", value: "ru" },
-    { label: "Japanese", value: "ja" },
-    { label: "Korean", value: "ko" },
-    { label: "Chinese", value: "zh" },
-];
-
 //setup form schema
 const formSchema = z.object({
     name: z.string().min(1).max(50),
@@ -65,19 +56,21 @@ const formSchema = z.object({
 
 export default function ExerciseCard({
     exercise,
+    exerciseNames,
     hide = true,
     editing = false,
     handleRemove = () => {},
     handleEdit = () => {},
     handleSave = () => {},
+    handleAddName = () => {},
 }) {
     const [nameOpen, setNameOpen] = React.useState(false);
+    const [inputValue, setInputValue] = React.useState("");
 
     //define form
     const exerciseForm = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            name: exercise.name,
             weight: exercise.weight,
             sets: exercise.sets,
             reps: exercise.reps,
@@ -91,6 +84,23 @@ export default function ExerciseCard({
         exercise.reps = data.reps;
 
         handleSave();
+    }
+
+    function addExerciseName() {
+        const newName = { label: inputValue, value: inputValue };
+        handleAddName([...exerciseNames, newName]);
+
+        //add name to firestore
+        addExerciseNameFirestore(inputValue).then(() => {
+            Swal.fire({
+                toast: true,
+                position: "top-end",
+                icon: "success",
+                title: `Added ${inputValue}!`,
+                showConfirmButton: false,
+                timer: 3000,
+            });
+        });
     }
 
     return (
@@ -111,7 +121,7 @@ export default function ExerciseCard({
                                     name="name"
                                     render={({ field }) => (
                                         <FormItem className="flex flex-col">
-                                            <FormLabel>Language</FormLabel>
+                                            <FormLabel>Name</FormLabel>
                                             <Popover
                                                 open={nameOpen}
                                                 onOpenChange={setNameOpen}
@@ -122,50 +132,71 @@ export default function ExerciseCard({
                                                             variant="outline"
                                                             role="combobox"
                                                             className={cn(
-                                                                "w-[200px] justify-between mx-auto",
+                                                                "w-full sm:w-1/2 justify-between mx-auto",
                                                                 !field.value &&
                                                                     "text-muted-foreground"
                                                             )}
                                                         >
                                                             {field.value
-                                                                ? languages.find(
+                                                                ? exerciseNames.find(
                                                                       (
-                                                                          language
+                                                                          exerciseName
                                                                       ) =>
-                                                                          language.value ===
+                                                                          exerciseName.value ===
                                                                           field.value
                                                                   )?.label
-                                                                : "Select language"}
-                                                            <Check className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                                                : "Select name"}
+                                                            <IoChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                                         </Button>
                                                     </FormControl>
                                                 </PopoverTrigger>
-                                                <PopoverContent className="w-[200px] p-0">
+                                                <PopoverContent className="p-0">
                                                     <Command>
                                                         <CommandInput
-                                                            placeholder="Search framework..."
-                                                            className="h-9 "
+                                                            placeholder="Search name..."
+                                                            className="h-9 w-full"
+                                                            onValueChange={(
+                                                                value
+                                                            ) => {
+                                                                setInputValue(
+                                                                    value
+                                                                );
+                                                            }}
                                                         />
                                                         <CommandEmpty>
-                                                            No framework found.
+                                                            <Button
+                                                                onClick={() => {
+                                                                    addExerciseName();
+
+                                                                    exerciseForm.setValue(
+                                                                        "name",
+                                                                        inputValue
+                                                                    );
+                                                                    setNameOpen(
+                                                                        false
+                                                                    );
+                                                                }}
+                                                            >
+                                                                {`Add "${inputValue}"`}
+                                                            </Button>
                                                         </CommandEmpty>
                                                         <CommandGroup>
                                                             <CommandList>
-                                                                {languages.map(
+                                                                {exerciseNames.map(
                                                                     (
-                                                                        language
+                                                                        exerciseName
                                                                     ) => (
                                                                         <CommandItem
                                                                             value={
-                                                                                language.label
+                                                                                exerciseName.label
                                                                             }
                                                                             key={
-                                                                                language.value
+                                                                                exerciseName.value
                                                                             }
                                                                             onSelect={() => {
                                                                                 exerciseForm.setValue(
                                                                                     "name",
-                                                                                    language.value
+                                                                                    exerciseName.value
                                                                                 );
                                                                                 setNameOpen(
                                                                                     false
@@ -173,12 +204,12 @@ export default function ExerciseCard({
                                                                             }}
                                                                         >
                                                                             {
-                                                                                language.label
+                                                                                exerciseName.label
                                                                             }
                                                                             <Check
                                                                                 className={cn(
                                                                                     "ml-auto h-4 w-4",
-                                                                                    language.value ===
+                                                                                    exerciseName.value ===
                                                                                         field.value
                                                                                         ? "opacity-100"
                                                                                         : "opacity-0"

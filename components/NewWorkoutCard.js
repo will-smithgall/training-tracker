@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import ExerciseCard from "@/components/ExerciseCard";
 import { getWorkoutByDate } from "@/lib/firestore/GetWorkouts";
 import { saveWorkout } from "@/lib/firestore/SaveWorkout";
+import { getExercises } from "@/lib/firestore/GetExercises";
 import formatDate from "@/lib/DateFormat";
 import { useRouter } from "next/navigation";
 import { IoHome } from "react-icons/io5";
@@ -23,10 +24,12 @@ import {
     TableHead,
     TableCell,
 } from "@/components/ui/table";
+import { NextFetchEvent } from "next/server";
 
 export default function NewWorkoutCard({ date }) {
     const [exercises, setExercises] = React.useState([]);
     const [internalDate, setInternalDate] = React.useState(new Date(date));
+    const [exerciseNames, setExerciseNames] = React.useState([]);
     const router = useRouter();
 
     function loadExercises() {
@@ -119,9 +122,8 @@ export default function NewWorkoutCard({ date }) {
             });
             return;
         }
-
+        //TODO: GO THROUGH EXERCISES CHECK IF THEY ARE STILL BEING EDITED, IF SO, SAVE THEM THEN SAVE WORKOUT
         await saveWorkout(exercises, formatDate(internalDate));
-        console.log("HEROIAJ:FDKL");
         Swal.fire({
             toast: true,
             position: "top-end",
@@ -136,6 +138,18 @@ export default function NewWorkoutCard({ date }) {
         //load exercises on page load, in case there are some exercises in workout already
         loadExercises();
     }, []);
+
+    React.useEffect(() => {
+        //Get exercise names on page load
+        getExercises().then((snapshot) => {
+            const newExerciseNames = [];
+            snapshot.forEach((doc) => {
+                const newExercise = { label: doc.id, value: doc.id };
+                newExerciseNames.push(newExercise);
+            });
+            setExerciseNames(newExerciseNames);
+        });
+    }, [exerciseNames]);
 
     React.useEffect(() => {
         if (!internalDate) {
@@ -176,6 +190,7 @@ export default function NewWorkoutCard({ date }) {
                                         exercise={exercise}
                                         hide={false}
                                         editing={exercise.editing}
+                                        exerciseNames={exerciseNames}
                                         handleRemove={() =>
                                             handleRemoveExercise(exercise.key)
                                         }
@@ -185,6 +200,7 @@ export default function NewWorkoutCard({ date }) {
                                         handleSave={() =>
                                             handleSaveExercise(exercise.key)
                                         }
+                                        handleAddExercise={setExerciseNames}
                                     />
                                 </div>
                             );
