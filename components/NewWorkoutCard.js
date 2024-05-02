@@ -176,7 +176,7 @@ export default function NewWorkoutCard({ date }) {
                                         exercise={exercise}
                                         hide={false}
                                         editing={exercise.editing}
-                                        handleClick={() =>
+                                        handleRemove={() =>
                                             handleRemoveExercise(exercise.key)
                                         }
                                         handleEdit={() =>
