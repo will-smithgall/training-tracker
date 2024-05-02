@@ -122,7 +122,25 @@ export default function NewWorkoutCard({ date }) {
             });
             return;
         }
-        //TODO: GO THROUGH EXERCISES CHECK IF THEY ARE STILL BEING EDITED, IF SO, SAVE THEM THEN SAVE WORKOUT
+
+        //Don't allow to save if still editing
+        const editing = exercises.filter((exercise) => {
+            if (exercise.editing) {
+                return exercise;
+            }
+        });
+        if (editing.length > 0) {
+            Swal.fire({
+                toast: true,
+                position: "top-end",
+                icon: "error",
+                title: `Finish editing ${editing[0].name}!`,
+                showConfirmButton: false,
+                timer: 3000,
+            });
+            return;
+        }
+
         await saveWorkout(exercises, formatDate(internalDate));
         Swal.fire({
             toast: true,
