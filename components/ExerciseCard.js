@@ -14,6 +14,9 @@ import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { addExerciseNameFirestore } from "@/lib/firestore/SetExercises";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import Swal from "sweetalert2";
 import {
     Table,
@@ -52,6 +55,8 @@ const formSchema = z.object({
     weight: z.coerce.string().min(0),
     sets: z.coerce.string().min(0),
     reps: z.coerce.string().min(0),
+    time: z.coerce.string().min(0),
+    calories: z.coerce.string().min(0),
 });
 
 export default function ExerciseCard({
@@ -66,23 +71,39 @@ export default function ExerciseCard({
 }) {
     const [nameOpen, setNameOpen] = React.useState(false);
     const [inputValue, setInputValue] = React.useState("");
+    const [isCardio, setIsCardio] = React.useState(exercise.cardio);
+
+    React.useEffect(() => {
+        console.log(exercise);
+    }, []);
 
     //define form
     const exerciseForm = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
+            name: exercise.name !== "Name" ? exercise.name : "",
             weight: exercise.weight,
             sets: exercise.sets,
             reps: exercise.reps,
+            time: 10,
+            calories: 100,
         },
     });
 
     function onSubmit(data) {
         exercise.name = data.name;
-        exercise.weight = data.weight;
-        exercise.sets = data.sets;
-        exercise.reps = data.reps;
+        exercise.cardio = isCardio;
 
+        if (isCardio) {
+            exercise.time = data.time;
+            exercise.calories = data.calories;
+        } else {
+            exercise.weight = data.weight;
+            exercise.sets = data.sets;
+            exercise.reps = data.reps;
+        }
+
+        console.log(exercise);
         handleSave();
     }
 
@@ -104,7 +125,7 @@ export default function ExerciseCard({
     }
 
     return (
-        <Card className="p-2 group relative flex-grow">
+        <Card className="pt-2 px-2 group relative flex-grow">
             {!editing && (
                 <CardTitle className="pt-3 pb-5 text-center">
                     {exercise.name}
@@ -115,7 +136,7 @@ export default function ExerciseCard({
                 {editing ? (
                     <Form {...exerciseForm}>
                         <form onSubmit={exerciseForm.handleSubmit(onSubmit)}>
-                            <div className="flex flex-col gap-2">
+                            <div className="flex flex-col gap-5">
                                 <FormField
                                     control={exerciseForm.control}
                                     name="name"
@@ -228,62 +249,126 @@ export default function ExerciseCard({
                                     )}
                                 />
                                 <div className="flex justify-between">
-                                    <FormField
-                                        control={exerciseForm.control}
-                                        className="w-1/4 mt-2"
-                                        name="weight"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Weight</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        placeholder={
-                                                            exercise.weight
-                                                        }
-                                                        {...field}
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={exerciseForm.control}
-                                        className="w-1/4 mt-2"
-                                        name="sets"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Sets</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        placeholder={
-                                                            exercise.sets
-                                                        }
-                                                        {...field}
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={exerciseForm.control}
-                                        className="w-1/4 mt-2"
-                                        name="reps"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Reps</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        placeholder={
-                                                            exercise.reps
-                                                        }
-                                                        {...field}
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
+                                    {isCardio ? (
+                                        <>
+                                            <FormField
+                                                control={exerciseForm.control}
+                                                className="w-1/4 mt-2"
+                                                name="time"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>
+                                                            Time
+                                                        </FormLabel>
+                                                        <FormControl>
+                                                            <Input
+                                                                placeholder={
+                                                                    exercise.time
+                                                                }
+                                                                {...field}
+                                                            />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={exerciseForm.control}
+                                                className="w-1/4 mt-2"
+                                                name="calories"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>
+                                                            Calories
+                                                        </FormLabel>
+                                                        <FormControl>
+                                                            <Input
+                                                                placeholder={
+                                                                    exercise.calories
+                                                                }
+                                                                {...field}
+                                                            />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </>
+                                    ) : (
+                                        <>
+                                            <FormField
+                                                control={exerciseForm.control}
+                                                className="w-1/4 mt-2"
+                                                name="weight"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>
+                                                            Weight
+                                                        </FormLabel>
+                                                        <FormControl>
+                                                            <Input
+                                                                placeholder={
+                                                                    exercise.weight
+                                                                }
+                                                                {...field}
+                                                            />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={exerciseForm.control}
+                                                className="w-1/4 mt-2"
+                                                name="sets"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>
+                                                            Sets
+                                                        </FormLabel>
+                                                        <FormControl>
+                                                            <Input
+                                                                placeholder={
+                                                                    exercise.sets
+                                                                }
+                                                                {...field}
+                                                            />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={exerciseForm.control}
+                                                className="w-1/4 mt-2"
+                                                name="reps"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>
+                                                            Reps
+                                                        </FormLabel>
+                                                        <FormControl>
+                                                            <Input
+                                                                placeholder={
+                                                                    exercise.reps
+                                                                }
+                                                                {...field}
+                                                            />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </>
+                                    )}
+                                </div>
+                                <div className="flex flex-col mx-auto gap-2">
+                                    <Label>Cardio</Label>
+                                    <Switch
+                                        checked={isCardio}
+                                        onCheckedChange={() => {
+                                            setIsCardio(!isCardio);
+                                        }}
                                     />
                                 </div>
                             </div>
@@ -304,18 +389,40 @@ export default function ExerciseCard({
                     <Table>
                         <TableHeader>
                             <TableRow className="flex justify-around justify-items-center w-full">
-                                <TableHead>Weight</TableHead>
-                                <TableHead>Sets</TableHead>
-                                <TableHead>Reps</TableHead>
+                                {isCardio ? (
+                                    <>
+                                        <TableHead>Time</TableHead>
+                                        <TableHead>Calories</TableHead>
+                                    </>
+                                ) : (
+                                    <>
+                                        <TableHead>Weight</TableHead>
+                                        <TableHead>Sets</TableHead>
+                                        <TableHead>Reps</TableHead>
+                                    </>
+                                )}
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             <TableRow className="flex justify-around justify-items-center w-full">
-                                <>
-                                    <TableCell>{exercise.weight}</TableCell>
-                                    <TableCell>{exercise.sets}</TableCell>
-                                    <TableCell>{exercise.reps}</TableCell>
-                                </>
+                                {isCardio ? (
+                                    <>
+                                        <TableCell>
+                                            {exercise.time} min
+                                        </TableCell>
+                                        <TableCell>
+                                            {exercise.calories} cals
+                                        </TableCell>
+                                    </>
+                                ) : (
+                                    <>
+                                        <TableCell>
+                                            {exercise.weight} lb
+                                        </TableCell>
+                                        <TableCell>{exercise.sets}</TableCell>
+                                        <TableCell>{exercise.reps}</TableCell>
+                                    </>
+                                )}
                             </TableRow>
                         </TableBody>
                     </Table>
@@ -342,6 +449,9 @@ export default function ExerciseCard({
                             />
                         )}
                     </>
+                )}
+                {isCardio && !editing && (
+                    <Badge className="absolute left-2 top-2">Cardio</Badge>
                 )}
             </CardContent>
         </Card>

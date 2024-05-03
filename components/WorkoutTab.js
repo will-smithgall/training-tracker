@@ -28,16 +28,6 @@ export default function WorkoutTab() {
         snapshot.forEach((document) => {
             const data = document.data();
             setCalendarDate(data.Date.toDate());
-            let exercises = [];
-
-            for (const name in data) {
-                const content = data[name];
-                if (name != "Date") {
-                    exercises = [...exercises, { name, content }];
-                }
-            }
-
-            setWorkout(exercises);
         });
     };
 
@@ -55,16 +45,31 @@ export default function WorkoutTab() {
 
             for (const name in data) {
                 const content = data[name];
-                const reps = content.reps;
-                const sets = content.sets;
-                const weight = content.weight;
-                const key = content.key;
+                const cardio = content.cardio;
 
-                if (name != "Date") {
-                    exercises = [
-                        ...exercises,
-                        { name, reps, sets, weight, key },
-                    ];
+                if (content.cardio) {
+                    const time = content.time;
+                    const calories = content.calories;
+                    const key = content.key;
+
+                    if (name != "Date") {
+                        exercises = [
+                            ...exercises,
+                            { name, cardio, time, calories, key },
+                        ];
+                    }
+                } else {
+                    const reps = content.reps;
+                    const sets = content.sets;
+                    const weight = content.weight;
+                    const key = content.key;
+
+                    if (name != "Date") {
+                        exercises = [
+                            ...exercises,
+                            { name, cardio, reps, sets, weight, key },
+                        ];
+                    }
                 }
             }
 
@@ -89,8 +94,6 @@ export default function WorkoutTab() {
         if (!workout) {
             return;
         }
-
-        console.log(workout);
     }, [workout]);
 
     return (

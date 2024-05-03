@@ -43,13 +43,31 @@ export default function NewWorkoutCard({ date }) {
             let values = [];
             for (const name in workout) {
                 const content = workout[name];
-                if (name != "Date") {
+                const cardio = content.cardio;
+
+                if (content.cardio) {
+                    const time = content.time;
+                    const calories = content.calories;
+                    const key = content.key;
+
+                    if (name != "Date") {
+                        values = [
+                            ...values,
+                            { name, cardio, time, calories, key },
+                        ];
+                    }
+                } else {
                     const reps = content.reps;
                     const sets = content.sets;
                     const weight = content.weight;
                     const key = content.key;
 
-                    values = [...values, { name, reps, sets, weight, key }];
+                    if (name != "Date") {
+                        values = [
+                            ...values,
+                            { name, cardio, reps, sets, weight, key },
+                        ];
+                    }
                 }
             }
 
@@ -64,9 +82,10 @@ export default function NewWorkoutCard({ date }) {
     function handleAddExercise() {
         const newExercise = {
             name: "Name",
+            cardio: false,
             weight: 25,
-            reps: 3,
-            sets: 10,
+            reps: 10,
+            sets: 3,
             key: Math.random(),
         };
 
