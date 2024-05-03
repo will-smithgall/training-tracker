@@ -57,12 +57,12 @@ const formSchema = z.object({
 export default function ExerciseCard({
     exercise,
     exerciseNames,
+    setExerciseNames,
     hide = true,
     editing = false,
     handleRemove = () => {},
     handleEdit = () => {},
     handleSave = () => {},
-    handleAddName = () => {},
 }) {
     const [nameOpen, setNameOpen] = React.useState(false);
     const [inputValue, setInputValue] = React.useState("");
@@ -88,7 +88,7 @@ export default function ExerciseCard({
 
     function addExerciseName() {
         const newName = { label: inputValue, value: inputValue };
-        handleAddName([...exerciseNames, newName]);
+        setExerciseNames([...exerciseNames, newName]);
 
         //add name to firestore
         addExerciseNameFirestore(inputValue).then(() => {

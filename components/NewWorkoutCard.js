@@ -167,7 +167,7 @@ export default function NewWorkoutCard({ date }) {
             });
             setExerciseNames(newExerciseNames);
         });
-    }, [exerciseNames]);
+    }, []);
 
     React.useEffect(() => {
         if (!internalDate) {
@@ -209,6 +209,7 @@ export default function NewWorkoutCard({ date }) {
                                         hide={false}
                                         editing={exercise.editing}
                                         exerciseNames={exerciseNames}
+                                        setExerciseNames={setExerciseNames}
                                         handleRemove={() =>
                                             handleRemoveExercise(exercise.key)
                                         }
@@ -218,7 +219,6 @@ export default function NewWorkoutCard({ date }) {
                                         handleSave={() =>
                                             handleSaveExercise(exercise.key)
                                         }
-                                        handleAddExercise={setExerciseNames}
                                     />
                                 </div>
                             );
