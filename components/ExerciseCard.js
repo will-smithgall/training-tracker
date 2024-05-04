@@ -73,10 +73,6 @@ export default function ExerciseCard({
     const [inputValue, setInputValue] = React.useState("");
     const [isCardio, setIsCardio] = React.useState(exercise.cardio);
 
-    React.useEffect(() => {
-        console.log(exercise);
-    }, []);
-
     //define form
     const exerciseForm = useForm({
         resolver: zodResolver(formSchema),

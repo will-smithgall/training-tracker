@@ -2,24 +2,29 @@
 
 import * as React from "react";
 import { Calendar } from "@/components/ui/calendar";
-import ExerciseCard from "./ExerciseCard";
+import ExerciseCard from "@/components/ExerciseCard";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import formatDate from "@/lib/DateFormat";
 import { Separator } from "@/components/ui/separator";
+import GraphCard from "@/components/GraphCard";
+import GraphPicker from "@/components/GraphPicker";
+import { getExercises, getExerciseData } from "@/lib/firestore/GetExercises";
 
 import {
     getMostRecentWorkout,
     getWorkoutByDate,
 } from "@/lib/firestore/GetWorkouts";
+import { set } from "date-fns";
 
 export default function WorkoutTab() {
     const router = useRouter();
     const [calendarDate, setCalendarDate] = React.useState(new Date());
     const [workout, setWorkout] = React.useState([]);
-
-    //TODO: add somewhere to put a button to display a form to add a workout (another spot mentioned in todo below)
+    const [graphValue, setGraphValue] = React.useState("");
+    const [exerciseNames, setExerciseNames] = React.useState([]);
+    const [exerciseData, setExerciseData] = React.useState({});
 
     // Get most recent workout from firestore
     const showMostRecentWorkout = async () => {
@@ -91,10 +96,28 @@ export default function WorkoutTab() {
     }, [calendarDate]);
 
     React.useEffect(() => {
-        if (!workout) {
+        //Get exercise names on page load
+        getExercises().then((snapshot) => {
+            const newExerciseNames = [];
+            snapshot.forEach((doc) => {
+                const newExercise = { label: doc.id, value: doc.id };
+                newExerciseNames.push(newExercise);
+            });
+            setExerciseNames(newExerciseNames);
+            setGraphValue(newExerciseNames[0]?.value);
+            console.log(graphValue);
+        });
+    }, []);
+
+    React.useEffect(() => {
+        if (!graphValue) {
             return;
         }
-    }, [workout]);
+
+        const exerciseData = getExerciseData(graphValue).then((snapshot) => {
+            setExerciseData(snapshot.docs[0].data());
+        });
+    }, [graphValue]);
 
     return (
         <>
@@ -154,6 +177,18 @@ export default function WorkoutTab() {
                         </div>
                     </CardContent>
                 </Card>
+            </div>
+            <div className="pt-3 flex flex-col sm:flex-row-reverse gap-3 sm:justify-end">
+                <div className="w-full sm:w-1/4">
+                    <GraphPicker
+                        exerciseNames={exerciseNames}
+                        graphValue={graphValue}
+                        setGraphValue={setGraphValue}
+                    />
+                </div>
+                <div className="grow">
+                    <GraphCard name={graphValue} exerciseData={exerciseData} />
+                </div>
             </div>
         </>
     );
