@@ -24,7 +24,6 @@ import {
     TableHead,
     TableCell,
 } from "@/components/ui/table";
-import { NextFetchEvent } from "next/server";
 
 export default function NewWorkoutCard({ date }) {
     const [exercises, setExercises] = React.useState([]);
