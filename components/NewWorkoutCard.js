@@ -27,7 +27,10 @@ import {
 
 export default function NewWorkoutCard({ date }) {
     const [exercises, setExercises] = React.useState([]);
-    const [internalDate, setInternalDate] = React.useState(new Date(date));
+    const [internalDate, setInternalDate] = React.useState(() => {
+        const [year, month, day] = date.split("-").map(Number);
+        return new Date(year, month - 1, day);
+    });
     const [exerciseNames, setExerciseNames] = React.useState([]);
     const router = useRouter();
 
@@ -188,12 +191,17 @@ export default function NewWorkoutCard({ date }) {
     }, []);
 
     React.useEffect(() => {
-        if (!internalDate) {
+        const initialDate = new Date(date).toISOString().split("T")[0];
+        const internalDateString = new Date(internalDate)
+            .toISOString()
+            .split("T")[0];
+
+        if (initialDate === internalDateString) {
             return;
         }
 
         //Redirect to new-workout page with new date
-        router.push(formatDate(internalDate));
+        router.push(internalDateString);
     }, [internalDate]);
 
     return (
