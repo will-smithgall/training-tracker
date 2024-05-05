@@ -170,7 +170,7 @@ export default function NewWorkoutCard({ date }) {
     //     });
     // }
 
-    React.useEffect(() => {
+    React.useEffect(function () {
         //load exercises on page load, in case there are some exercises in workout already
         loadExercises();
     }, []);
