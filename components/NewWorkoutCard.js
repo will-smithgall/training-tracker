@@ -34,47 +34,47 @@ export default function NewWorkoutCard({ date }) {
     function loadExercises() {
         getWorkoutByDate(date).then((snapshot) => {
             if (snapshot.empty) {
-                setExercises([]);
+                setExercises([FUCK]);
                 return;
             }
 
-            const workout = snapshot.docs[0].data();
-            let values = [];
-            for (const name in workout) {
-                const content = workout[name];
-                const cardio = content.cardio;
+            // const workout = snapshot.docs[0].data();
+            // let values = [];
+            // for (const name in workout) {
+            //     const content = workout[name];
+            //     const cardio = content.cardio;
 
-                if (content.cardio) {
-                    const time = content.time;
-                    const calories = content.calories;
-                    const key = content.key;
+            //     if (content.cardio) {
+            //         const time = content.time;
+            //         const calories = content.calories;
+            //         const key = content.key;
 
-                    if (name != "Date") {
-                        values = [
-                            ...values,
-                            { name, cardio, time, calories, key },
-                        ];
-                    }
-                } else {
-                    const reps = content.reps;
-                    const sets = content.sets;
-                    const weight = content.weight;
-                    const key = content.key;
+            //         if (name != "Date") {
+            //             values = [
+            //                 ...values,
+            //                 { name, cardio, time, calories, key },
+            //             ];
+            //         }
+            //     } else {
+            //         const reps = content.reps;
+            //         const sets = content.sets;
+            //         const weight = content.weight;
+            //         const key = content.key;
 
-                    if (name != "Date") {
-                        values = [
-                            ...values,
-                            { name, cardio, reps, sets, weight, key },
-                        ];
-                    }
-                }
-            }
+            //         if (name != "Date") {
+            //             values = [
+            //                 ...values,
+            //                 { name, cardio, reps, sets, weight, key },
+            //             ];
+            //         }
+            //     }
+            // }
 
-            for (const x in values) {
-                console.log(values[x]);
-            }
+            // for (const x in values) {
+            //     console.log(values[x]);
+            // }
 
-            setExercises(values);
+            setExercises([1, 2, 3]);
         });
     }
 
@@ -251,7 +251,7 @@ export default function NewWorkoutCard({ date }) {
                 </div>
             </CardContent> */}
             {exercises.map((exercise) => {
-                return <p>{exercise.name}</p>;
+                return <p>{exercise}</p>;
             })}
         </Card>
     );
