@@ -31,52 +31,52 @@ export default function NewWorkoutCard({ date }) {
     const [exerciseNames, setExerciseNames] = React.useState([]);
     const router = useRouter();
 
-    function loadExercises() {
-        getWorkoutByDate(date).then((snapshot) => {
-            if (snapshot.empty) {
-                setExercises([FUCK]);
-                return;
-            }
+    // function loadExercises() {
+    //     getWorkoutByDate(date).then((snapshot) => {
+    //         if (snapshot.empty) {
+    //             setExercises([FUCK]);
+    //             return;
+    //         }
 
-            // const workout = snapshot.docs[0].data();
-            // let values = [];
-            // for (const name in workout) {
-            //     const content = workout[name];
-            //     const cardio = content.cardio;
+    //         // const workout = snapshot.docs[0].data();
+    //         // let values = [];
+    //         // for (const name in workout) {
+    //         //     const content = workout[name];
+    //         //     const cardio = content.cardio;
 
-            //     if (content.cardio) {
-            //         const time = content.time;
-            //         const calories = content.calories;
-            //         const key = content.key;
+    //         //     if (content.cardio) {
+    //         //         const time = content.time;
+    //         //         const calories = content.calories;
+    //         //         const key = content.key;
 
-            //         if (name != "Date") {
-            //             values = [
-            //                 ...values,
-            //                 { name, cardio, time, calories, key },
-            //             ];
-            //         }
-            //     } else {
-            //         const reps = content.reps;
-            //         const sets = content.sets;
-            //         const weight = content.weight;
-            //         const key = content.key;
+    //         //         if (name != "Date") {
+    //         //             values = [
+    //         //                 ...values,
+    //         //                 { name, cardio, time, calories, key },
+    //         //             ];
+    //         //         }
+    //         //     } else {
+    //         //         const reps = content.reps;
+    //         //         const sets = content.sets;
+    //         //         const weight = content.weight;
+    //         //         const key = content.key;
 
-            //         if (name != "Date") {
-            //             values = [
-            //                 ...values,
-            //                 { name, cardio, reps, sets, weight, key },
-            //             ];
-            //         }
-            //     }
-            // }
+    //         //         if (name != "Date") {
+    //         //             values = [
+    //         //                 ...values,
+    //         //                 { name, cardio, reps, sets, weight, key },
+    //         //             ];
+    //         //         }
+    //         //     }
+    //         // }
 
-            // for (const x in values) {
-            //     console.log(values[x]);
-            // }
+    //         // for (const x in values) {
+    //         //     console.log(values[x]);
+    //         // }
 
-            setExercises([1, 2, 3]);
-        });
-    }
+    //         setExercises([1, 2, 3]);
+    //     });
+    // }
 
     // function handleAddExercise() {
     //     const newExercise = {
@@ -172,7 +172,8 @@ export default function NewWorkoutCard({ date }) {
 
     React.useEffect(() => {
         //load exercises on page load, in case there are some exercises in workout already
-        loadExercises();
+        // loadExercises();
+        setExercises([1, 2, 3]);
     }, []);
 
     // React.useEffect(() => {
