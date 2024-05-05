@@ -6,6 +6,7 @@ export default function NewWorkout({ params }) {
     //TODO: Should add new excercise one by one (new card)
 
     //TODO: Once that excercise card is filled out, that data gets appended to firestore document
+    //<NewWorkoutCard date={params.date} />
 
-    return <p>HMMM</p>; //TODO: Set up form/table or something to place all data in (for each excercise)
+    return <p>{params.date}</p>; //TODO: Set up form/table or something to place all data in (for each excercise)
 }
