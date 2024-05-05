@@ -26,179 +26,179 @@ import {
 } from "@/components/ui/table";
 
 export default function NewWorkoutCard({ date }) {
-    const [exercises, setExercises] = React.useState([]);
-    const [internalDate, setInternalDate] = React.useState(new Date(date));
-    const [exerciseNames, setExerciseNames] = React.useState([]);
-    const router = useRouter();
+    // const [exercises, setExercises] = React.useState([]);
+    // const [internalDate, setInternalDate] = React.useState(new Date(date));
+    // const [exerciseNames, setExerciseNames] = React.useState([]);
+    // const router = useRouter();
 
-    function loadExercises() {
-        getWorkoutByDate(date).then((snapshot) => {
-            if (snapshot.empty) {
-                setExercises([]);
-                return;
-            }
+    // function loadExercises() {
+    //     getWorkoutByDate(date).then((snapshot) => {
+    //         if (snapshot.empty) {
+    //             setExercises([]);
+    //             return;
+    //         }
 
-            const workout = snapshot.docs[0].data();
-            let values = [];
-            for (const name in workout) {
-                const content = workout[name];
-                const cardio = content.cardio;
+    //         const workout = snapshot.docs[0].data();
+    //         let values = [];
+    //         for (const name in workout) {
+    //             const content = workout[name];
+    //             const cardio = content.cardio;
 
-                if (content.cardio) {
-                    const time = content.time;
-                    const calories = content.calories;
-                    const key = content.key;
+    //             if (content.cardio) {
+    //                 const time = content.time;
+    //                 const calories = content.calories;
+    //                 const key = content.key;
 
-                    if (name != "Date") {
-                        values = [
-                            ...values,
-                            { name, cardio, time, calories, key },
-                        ];
-                    }
-                } else {
-                    const reps = content.reps;
-                    const sets = content.sets;
-                    const weight = content.weight;
-                    const key = content.key;
+    //                 if (name != "Date") {
+    //                     values = [
+    //                         ...values,
+    //                         { name, cardio, time, calories, key },
+    //                     ];
+    //                 }
+    //             } else {
+    //                 const reps = content.reps;
+    //                 const sets = content.sets;
+    //                 const weight = content.weight;
+    //                 const key = content.key;
 
-                    if (name != "Date") {
-                        values = [
-                            ...values,
-                            { name, cardio, reps, sets, weight, key },
-                        ];
-                    }
-                }
-            }
+    //                 if (name != "Date") {
+    //                     values = [
+    //                         ...values,
+    //                         { name, cardio, reps, sets, weight, key },
+    //                     ];
+    //                 }
+    //             }
+    //         }
 
-            for (const x in values) {
-                console.log(values[x]);
-            }
+    //         for (const x in values) {
+    //             console.log(values[x]);
+    //         }
 
-            setExercises(values);
-        });
-    }
+    //         setExercises(values);
+    //     });
+    // }
 
-    function handleAddExercise() {
-        const newExercise = {
-            name: "Name",
-            cardio: false,
-            weight: 25,
-            reps: 10,
-            sets: 3,
-            key: Math.random(),
-        };
+    // function handleAddExercise() {
+    //     const newExercise = {
+    //         name: "Name",
+    //         cardio: false,
+    //         weight: 25,
+    //         reps: 10,
+    //         sets: 3,
+    //         key: Math.random(),
+    //     };
 
-        const newExercises = [...exercises, newExercise];
-        setExercises(newExercises);
-    }
+    //     const newExercises = [...exercises, newExercise];
+    //     setExercises(newExercises);
+    // }
 
-    function handleRemoveExercise(index) {
-        const newExercises = exercises.filter((exercise) => {
-            return exercise.key !== index;
-        });
+    // function handleRemoveExercise(index) {
+    //     const newExercises = exercises.filter((exercise) => {
+    //         return exercise.key !== index;
+    //     });
 
-        setExercises(newExercises);
-    }
+    //     setExercises(newExercises);
+    // }
 
-    function handleEditExercise(index) {
-        const newExercises = exercises.map((exercise) => {
-            if (exercise.key === index) {
-                return {
-                    ...exercise,
-                    editing: true,
-                };
-            }
-            return exercise;
-        });
+    // function handleEditExercise(index) {
+    //     const newExercises = exercises.map((exercise) => {
+    //         if (exercise.key === index) {
+    //             return {
+    //                 ...exercise,
+    //                 editing: true,
+    //             };
+    //         }
+    //         return exercise;
+    //     });
 
-        setExercises(newExercises);
-    }
+    //     setExercises(newExercises);
+    // }
 
-    function handleSaveExercise(key) {
-        const newExercises = exercises.map((exercise) => {
-            if (exercise.key === key) {
-                return {
-                    ...exercise,
-                    editing: false,
-                };
-            }
-            return exercise;
-        });
+    // function handleSaveExercise(key) {
+    //     const newExercises = exercises.map((exercise) => {
+    //         if (exercise.key === key) {
+    //             return {
+    //                 ...exercise,
+    //                 editing: false,
+    //             };
+    //         }
+    //         return exercise;
+    //     });
 
-        setExercises(newExercises);
-    }
+    //     setExercises(newExercises);
+    // }
 
-    async function handleSaveWorkout() {
-        if (exercises.length === 0) {
-            Swal.fire({
-                toast: true,
-                position: "top-end",
-                icon: "error",
-                title: "Empty workout!",
-                showConfirmButton: false,
-                timer: 3000,
-            });
-            return;
-        }
+    // async function handleSaveWorkout() {
+    //     if (exercises.length === 0) {
+    //         Swal.fire({
+    //             toast: true,
+    //             position: "top-end",
+    //             icon: "error",
+    //             title: "Empty workout!",
+    //             showConfirmButton: false,
+    //             timer: 3000,
+    //         });
+    //         return;
+    //     }
 
-        //Don't allow to save if still editing
-        const editing = exercises.filter((exercise) => {
-            if (exercise.editing) {
-                return exercise;
-            }
-        });
-        if (editing.length > 0) {
-            Swal.fire({
-                toast: true,
-                position: "top-end",
-                icon: "error",
-                title: `Finish editing ${editing[0].name}!`,
-                showConfirmButton: false,
-                timer: 3000,
-            });
-            return;
-        }
+    //     //Don't allow to save if still editing
+    //     const editing = exercises.filter((exercise) => {
+    //         if (exercise.editing) {
+    //             return exercise;
+    //         }
+    //     });
+    //     if (editing.length > 0) {
+    //         Swal.fire({
+    //             toast: true,
+    //             position: "top-end",
+    //             icon: "error",
+    //             title: `Finish editing ${editing[0].name}!`,
+    //             showConfirmButton: false,
+    //             timer: 3000,
+    //         });
+    //         return;
+    //     }
 
-        await saveWorkout(exercises, formatDate(internalDate));
-        Swal.fire({
-            toast: true,
-            position: "top-end",
-            icon: "success",
-            title: "Workout saved!",
-            showConfirmButton: false,
-            timer: 3000,
-        });
-    }
+    //     await saveWorkout(exercises, formatDate(internalDate));
+    //     Swal.fire({
+    //         toast: true,
+    //         position: "top-end",
+    //         icon: "success",
+    //         title: "Workout saved!",
+    //         showConfirmButton: false,
+    //         timer: 3000,
+    //     });
+    // }
 
-    React.useEffect(() => {
-        //load exercises on page load, in case there are some exercises in workout already
-        loadExercises();
-    }, []);
+    // React.useEffect(() => {
+    //     //load exercises on page load, in case there are some exercises in workout already
+    //     loadExercises();
+    // }, []);
 
-    React.useEffect(() => {
-        //Get exercise names on page load
-        getExercises().then((snapshot) => {
-            const newExerciseNames = [];
-            snapshot.forEach((doc) => {
-                const newExercise = { label: doc.id, value: doc.id };
-                newExerciseNames.push(newExercise);
-            });
-            setExerciseNames(newExerciseNames);
-        });
-    }, []);
+    // React.useEffect(() => {
+    //     //Get exercise names on page load
+    //     getExercises().then((snapshot) => {
+    //         const newExerciseNames = [];
+    //         snapshot.forEach((doc) => {
+    //             const newExercise = { label: doc.id, value: doc.id };
+    //             newExerciseNames.push(newExercise);
+    //         });
+    //         setExerciseNames(newExerciseNames);
+    //     });
+    // }, []);
 
-    React.useEffect(() => {
-        if (!internalDate) {
-            return;
-        }
+    // React.useEffect(() => {
+    //     if (!internalDate) {
+    //         return;
+    //     }
 
-        //Redirect to new-workout page with new date
-        router.push(formatDate(internalDate));
-    }, [internalDate]);
+    //     //Redirect to new-workout page with new date
+    //     router.push(formatDate(internalDate));
+    // }, [internalDate]);
 
     return (
         <Card className="p-3 m-5">
-            <CardHeader>
+            {/* <CardHeader>
                 <div className="flex flex-col gap-3 justify-center items-center">
                     <div className="flex items-center gap-14">
                         <Link href="/">
@@ -249,7 +249,8 @@ export default function NewWorkoutCard({ date }) {
                     <Button onClick={handleAddExercise}>Add Exercise</Button>
                     <Button onClick={handleSaveWorkout}>Save Workout</Button>
                 </div>
-            </CardContent>
+            </CardContent> */}
+            <p>Test</p>
         </Card>
     );
 }
