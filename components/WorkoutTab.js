@@ -33,6 +33,7 @@ export default function WorkoutTab() {
         snapshot.forEach((document) => {
             const data = document.data();
             setCalendarDate(data.Date.toDate());
+            console.log(new Date(data.Date.toDate()));
         });
     };
 
