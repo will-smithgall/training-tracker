@@ -11,7 +11,7 @@ export default function Home() {
     const handleRedirect = async () => {
         const user = await getCurrentUser();
         if (!user) {
-            window.location.href = "/login";
+            window.location.href = "/signup";
         }
 
         setFoundUser(true);
