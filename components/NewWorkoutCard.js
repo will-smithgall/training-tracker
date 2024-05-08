@@ -73,10 +73,6 @@ export default function NewWorkoutCard({ date }) {
                 }
             }
 
-            for (const x in values) {
-                console.log(values[x]);
-            }
-
             setExercises(values);
         });
     }

@@ -1,11 +1,25 @@
+"use client";
+
+import * as React from "react";
+
 import NewWorkoutCard from "@/components/NewWorkoutCard";
+import { getCurrentUser } from "@/lib/firestore/Users";
 
 export default function NewWorkout({ params }) {
-    //TODO: Write data to firestore document {date} with all excercise data as "map" type
+    const [foundUser, setFoundUser] = React.useState(false);
 
-    //TODO: Should add new excercise one by one (new card)
+    const handleRedirect = async () => {
+        const user = await getCurrentUser();
+        if (!user) {
+            window.location.href = "/login";
+        }
 
-    //TODO: Once that excercise card is filled out, that data gets appended to firestore document
+        setFoundUser(true);
+    };
 
-    return <NewWorkoutCard date={params.date} />; //TODO: Set up form/table or something to place all data in (for each excercise)
+    React.useEffect(() => {
+        handleRedirect();
+    }, []);
+
+    return foundUser ? <NewWorkoutCard date={params.date} /> : <></>;
 }

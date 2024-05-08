@@ -99,7 +99,6 @@ export default function ExerciseCard({
             exercise.reps = data.reps;
         }
 
-        console.log(exercise);
         handleSave();
     }
 
