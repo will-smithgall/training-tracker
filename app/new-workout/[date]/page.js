@@ -15,7 +15,6 @@ export default function NewWorkout({ params }) {
         }
 
         setFoundUser(true);
-        console.log("Got User: ", user);
     };
 
     React.useEffect(() => {
