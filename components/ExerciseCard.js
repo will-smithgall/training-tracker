@@ -120,7 +120,7 @@ export default function ExerciseCard({
     }
 
     return (
-        <Card className="pt-2 px-2 group relative flex-grow">
+        <Card className="pt-6 px-2 group relative flex-grow">
             {!editing && (
                 <CardTitle className="pt-3 pb-5 text-center">
                     {exercise.name}
