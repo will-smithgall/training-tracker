@@ -42,6 +42,7 @@ export default function SignupCard() {
         createUserWithEmailAndPassword(auth, emailInput, passwordInput)
             .then(async (userCredential) => {
                 await addUser(userCredential.user.email);
+                window.location.href = "/";
             })
             .catch((error) => {
                 if (
