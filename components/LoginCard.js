@@ -31,8 +31,6 @@ export default function LoginCard() {
 
     const handleLoginWithGoogle = () => {
         signInWithPopup(auth, new GoogleAuthProvider()).then((data) => {
-            console.log("User data: ", { data });
-            localStorage.setItem("email", data.user.email);
             window.location.href = "/";
         });
     };
@@ -40,8 +38,6 @@ export default function LoginCard() {
     const handleLoginWithEmailPassword = () => {
         signInWithEmailAndPassword(auth, emailInput.trim(), passwordInput)
             .then((userCredential) => {
-                console.log("User data: ", { userCredential });
-                localStorage.setItem("email", userCredential.user.email);
                 window.location.href = "/";
             })
             .catch((error) => {

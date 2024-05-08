@@ -3,17 +3,24 @@
 import * as React from "react";
 
 import NewWorkoutCard from "@/components/NewWorkoutCard";
+import { getCurrentUser } from "@/lib/firestore/Users";
 
 export default function NewWorkout({ params }) {
-    React.useEffect(() => {
-        const email = localStorage.getItem("email");
-        if (!email) {
-            //redirect to login
+    const [foundUser, setFoundUser] = React.useState(false);
+
+    const handleRedirect = async () => {
+        const user = await getCurrentUser();
+        if (!user) {
             window.location.href = "/login";
         }
 
-        console.log("User email: ", email);
+        setFoundUser(true);
+        console.log("Got User: ", user);
+    };
+
+    React.useEffect(() => {
+        handleRedirect();
     }, []);
 
-    return <NewWorkoutCard date={params.date} />;
+    return foundUser ? <NewWorkoutCard date={params.date} /> : <></>;
 }

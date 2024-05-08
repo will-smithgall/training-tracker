@@ -3,19 +3,36 @@
 import * as React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import WorkoutTab from "@/components/WorkoutTab";
+const { getCurrentUser } = require("@/lib/firestore/Users");
 
 export default function Home() {
-    React.useEffect(() => {
-        const email = localStorage.getItem("email");
-        if (!email) {
-            //redirect to login
+    const [foundUser, setFoundUser] = React.useState(false);
+
+    const handleRedirect = async () => {
+        const user = await getCurrentUser();
+        if (!user) {
             window.location.href = "/login";
         }
 
-        console.log("User email: ", email);
+        setFoundUser(true);
+        console.log("Got User: ", user);
+    };
+
+    React.useEffect(() => {
+        handleRedirect();
     }, []);
 
-    return (
+    // React.useEffect(() => {
+    //     const email = localStorage.getItem("email");
+    //     if (!email) {
+    //         //redirect to login
+    //         window.location.href = "/login";
+    //     }
+
+    //     console.log("User email: ", email);
+    // }, []);
+
+    return foundUser ? (
         <main className="flex min-h-screen flex-col items-center p-12 md:p-24">
             <Tabs defaultValue="workout" className="w-full min-w-[320px]">
                 <TabsList className="grid w-full grid-cols-2">
@@ -29,5 +46,7 @@ export default function Home() {
                 <TabsContent value="climbing"></TabsContent>
             </Tabs>
         </main>
+    ) : (
+        <></>
     );
 }

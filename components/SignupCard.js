@@ -33,8 +33,6 @@ export default function SignupCard() {
 
     const handleSignUpWithGoogle = () => {
         signInWithPopup(auth, new GoogleAuthProvider()).then(async (data) => {
-            console.log("User data: ", { data });
-            localStorage.setItem("email", data.user.email);
             await addUser(data.user.email);
             window.location.href = "/";
         });
@@ -43,8 +41,6 @@ export default function SignupCard() {
     const handleSignUpWithEmailPassword = () => {
         createUserWithEmailAndPassword(auth, emailInput, passwordInput)
             .then(async (userCredential) => {
-                console.log("User data: ", { userCredential });
-                localStorage.setItem("email", userCredential.user.email);
                 await addUser(userCredential.user.email);
             })
             .catch((error) => {
