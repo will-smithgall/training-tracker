@@ -22,16 +22,6 @@ export default function Home() {
         handleRedirect();
     }, []);
 
-    // React.useEffect(() => {
-    //     const email = localStorage.getItem("email");
-    //     if (!email) {
-    //         //redirect to login
-    //         window.location.href = "/login";
-    //     }
-
-    //     console.log("User email: ", email);
-    // }, []);
-
     return foundUser ? (
         <main className="flex min-h-screen flex-col items-center p-12 md:p-24">
             <Tabs defaultValue="workout" className="w-full min-w-[320px]">
