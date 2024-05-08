@@ -115,8 +115,14 @@ export default function WorkoutTab() {
             return;
         }
 
-        const exerciseData = getExerciseData(graphValue).then((snapshot) => {
-            setExerciseData(snapshot.docs[0].data());
+        getExerciseData(graphValue).then((snapshot) => {
+            const data = Object.entries(snapshot.docs[0].data());
+
+            data.sort(([a], [b]) => {
+                return new Date(a) - new Date(b);
+            });
+
+            setExerciseData(Object.fromEntries(data));
         });
     }, [graphValue]);
 
