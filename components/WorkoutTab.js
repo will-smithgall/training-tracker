@@ -11,12 +11,15 @@ import { Separator } from "@/components/ui/separator";
 import GraphCard from "@/components/GraphCard";
 import GraphPicker from "@/components/GraphPicker";
 import { getExercises, getExerciseData } from "@/lib/firestore/GetExercises";
+import WorkoutCard from "@/components/WorkoutCard";
+import { MdNavigateNext } from "react-icons/md";
+import { MdNavigateBefore } from "react-icons/md";
 
 import {
     getMostRecentWorkout,
     getWorkoutByDate,
+    getAllWorkouts,
 } from "@/lib/firestore/GetWorkouts";
-import { set } from "date-fns";
 
 export default function WorkoutTab() {
     const router = useRouter();
@@ -25,6 +28,7 @@ export default function WorkoutTab() {
     const [graphValue, setGraphValue] = React.useState("");
     const [exerciseNames, setExerciseNames] = React.useState([]);
     const [exerciseData, setExerciseData] = React.useState({});
+    const [workoutDates, setWorkoutDates] = React.useState([]);
 
     // Get most recent workout from firestore
     const showMostRecentWorkout = async () => {
@@ -126,9 +130,62 @@ export default function WorkoutTab() {
         });
     }, [graphValue]);
 
+    React.useEffect(() => {
+        //Get workout dates on page load
+        getAllWorkouts().then((snapshot) => {
+            const dates = [];
+            snapshot.forEach((doc) => {
+                const date = doc.data().Date.toDate();
+
+                dates.push(formatDate(date));
+            });
+            dates.sort(([a], [b]) => {
+                return new Date(a) - new Date(b);
+            });
+            setWorkoutDates(dates);
+        });
+    });
+
+    const handlePrevWorkout = () => {
+        //Go to previous date if it exists, otherwise don't change
+        let prevDate;
+        if (workoutDates.indexOf(formatDate(calendarDate)) - 1 >= 0) {
+            prevDate =
+                workoutDates[
+                    workoutDates.indexOf(formatDate(calendarDate)) - 1
+                ];
+        } else {
+            return;
+        }
+
+        const prevDateWithOffset = new Date(prevDate);
+        prevDateWithOffset.setHours(prevDateWithOffset.getHours() + 4);
+        setCalendarDate(prevDateWithOffset);
+    };
+
+    const handleNextWorkout = () => {
+        //Go to next date if it exists, otherwise don't change
+        let nextDate;
+        if (
+            workoutDates.indexOf(formatDate(calendarDate)) + 1 <
+            workoutDates.length
+        ) {
+            nextDate =
+                workoutDates[
+                    workoutDates.indexOf(formatDate(calendarDate)) + 1
+                ];
+        } else {
+            return;
+        }
+
+        const nextDateWithOffset = new Date(nextDate);
+        nextDateWithOffset.setHours(nextDateWithOffset.getHours() + 4);
+        setCalendarDate(nextDateWithOffset);
+    };
+
     return (
         <>
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex flex-col md:flex-row gap-3">
                 <Card className="h-fit grid justify-items-center">
                     <CardContent>
                         <Calendar
@@ -153,40 +210,50 @@ export default function WorkoutTab() {
                         </div>
                     </CardContent>
                 </Card>
-                <Card className="grow pt-6">
-                    <CardContent>
-                        <div className="flex sm:flex-row flex-col gap-2 flex-wrap">
-                            {workout.length != 0 ? (
-                                workout.map((exercise) => {
-                                    return (
-                                        <ExerciseCard
-                                            key={exercise.key}
-                                            exercise={exercise}
-                                        />
-                                    );
-                                })
-                            ) : (
-                                <>
-                                    <p>No workout found for this day</p>
-                                    <Button
-                                        onClick={() =>
-                                            router.push(
-                                                `new-workout/${formatDate(
-                                                    calendarDate
-                                                )}`
-                                            )
-                                        }
-                                    >
-                                        Log New Workout
-                                    </Button>
-                                </> //TODO: Make this not ass lmfao
-                            )}
-                        </div>
+                <Card className="grow pt-6 relative md:max-h-96 max-h-full">
+                    <CardContent className="md:overflow-auto md:max-h-[85%] pb-14 md:pb-0">
+                        {workout.length != 0 ? (
+                            <>
+                                <WorkoutCard
+                                    workout={workout}
+                                    date={formatDate(calendarDate)}
+                                />
+                                <Button
+                                    variant="outline"
+                                    className="absolute md:left-2 md:bottom-2 left-3 bottom-3"
+                                    onClick={handlePrevWorkout}
+                                >
+                                    <MdNavigateBefore />
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    className="absolute md:right-2 md:bottom-2 right-3 bottom-3"
+                                    onClick={handleNextWorkout}
+                                >
+                                    <MdNavigateNext />
+                                </Button>
+                            </>
+                        ) : (
+                            <>
+                                <p>No workout found for this day</p>
+                                <Button
+                                    onClick={() =>
+                                        router.push(
+                                            `new-workout/${formatDate(
+                                                calendarDate
+                                            )}`
+                                        )
+                                    }
+                                >
+                                    Log New Workout
+                                </Button>
+                            </> //TODO: Make this not ass lmfao
+                        )}
                     </CardContent>
                 </Card>
             </div>
             <div className="pt-3 flex flex-col sm:flex-row-reverse gap-3 sm:justify-end">
-                <div className="w-full sm:w-1/4">
+                <div className="w-full md:w-1/4">
                     <GraphPicker
                         exerciseNames={exerciseNames}
                         graphValue={graphValue}
