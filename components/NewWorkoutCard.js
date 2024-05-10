@@ -85,6 +85,7 @@ export default function NewWorkoutCard({ date }) {
             reps: 10,
             sets: 3,
             key: Math.random(),
+            editing: true,
         };
 
         const newExercises = [...exercises, newExercise];

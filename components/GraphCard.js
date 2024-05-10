@@ -73,7 +73,7 @@ export default function GraphCard({ exerciseData, name }) {
     };
 
     return (
-        <Card className="w-full p-3">
+        <Card className="w-full pt-3">
             <CardContent>
                 <Line options={options} data={data} />
             </CardContent>
