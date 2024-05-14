@@ -144,7 +144,7 @@ export default function WorkoutTab() {
             });
             setWorkoutDates(dates);
         });
-    });
+    }, []);
 
     const handlePrevWorkout = () => {
         //Go to previous date if it exists, otherwise don't change
